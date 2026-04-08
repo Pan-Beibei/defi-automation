@@ -3,6 +3,15 @@
 
 package types
 
+type CreateAccountReq struct {
+	PublicKeyX   string `json:"publicKeyX"`
+	PublicKeyY   string `json:"publicKeyY"`
+	CredentialId string `json:"credentialId"`
+}
+
+type CreateAccountResp struct {
+}
+
 type Request struct {
 	Name string `path:"name,options=you|me"`
 }

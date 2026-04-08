@@ -8,8 +8,20 @@ type Response {
 	Message string `json:"message"`
 }
 
+type (
+	CreateAccountReq {
+		PublicKeyX   string `json:"publicKeyX"`
+		PublicKeyY   string `json:"publicKeyY"`
+		CredentialId string `json:"credentialId"`
+	}
+	CreateAccountResp  {}
+)
+
 service server-api {
 	@handler ServerHandler
 	get /from/:name (Request) returns (Response)
+
+	@handler CreateAccount
+	post /account/create (CreateAccountReq) returns (CreateAccountResp)
 }
 
