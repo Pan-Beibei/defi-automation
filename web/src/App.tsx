@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { WebAuthnP256 } from "ox";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import api from "./api";
 
 function App() {
@@ -9,6 +9,11 @@ function App() {
     onError: (err) => {
       console.error(err);
     },
+  });
+
+  const { data: supportedPermissions } = useQuery({
+    queryKey: ["supportedPermissions"],
+    queryFn: api.getSupportedPermissions,
   });
 
   async function handleClick() {
@@ -29,11 +34,16 @@ function App() {
     });
   }
 
+  console.log("支持权限：", supportedPermissions);
+
   return (
     <>
       <Button variant="contained" onClick={handleClick}>
         Click Me
       </Button>
+      {supportedPermissions && (
+        <pre>{JSON.stringify(supportedPermissions, null, 2)}</pre>
+      )}
     </>
   );
 }

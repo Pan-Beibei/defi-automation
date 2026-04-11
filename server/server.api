@@ -1,13 +1,5 @@
 syntax = "v1"
 
-type Request {
-	Name string `path:"name,options=you|me"`
-}
-
-type Response {
-	Message string `json:"message"`
-}
-
 type (
 	CreateAccountReq {
 		PublicKeyX   string `json:"publicKeyX"`
@@ -17,11 +9,30 @@ type (
 	CreateAccountResp  {}
 )
 
-service server-api {
-	@handler ServerHandler
-	get /from/:name (Request) returns (Response)
+type ChainInfo {
+	ChainId string `json:"chainId"`
+	Name    string `json:"name"`
+}
 
+type PermissionDetail {
+	Type         string      `json:"type"`
+	ProposedName string      `json:"proposedName"`
+	Chains       []ChainInfo `json:"chains"`
+	RuleTypes    []string    `json:"ruleTypes"`
+}
+
+type (
+	GetSupportedPermissionsReq  {}
+	GetSupportedPermissionsResp {
+		Permissions []PermissionDetail `json:"permissions"`
+	}
+)
+
+service server-api {
 	@handler CreateAccount
 	post /account/create (CreateAccountReq) returns (CreateAccountResp)
+
+	@handler GetSupportedPermissions
+	get /supported-permissions (GetSupportedPermissionsReq) returns (GetSupportedPermissionsResp)
 }
 

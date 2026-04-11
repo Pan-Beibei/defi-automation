@@ -15,6 +15,13 @@ const createAccount = (request: CreateAccountRequest) => {
   });
 };
 
+const getSupportedPermissions = () => {
+  return apiClient.get({
+    url: "/supported-permissions",
+  });
+};
+
 export default {
   createAccount,
+  getSupportedPermissions,
 };

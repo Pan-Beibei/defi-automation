@@ -21,8 +21,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/from/:name",
-				Handler: ServerHandler(serverCtx),
+				Path:    "/supported-permissions",
+				Handler: GetSupportedPermissionsHandler(serverCtx),
 			},
 		},
 	)

@@ -3,6 +3,11 @@
 
 package types
 
+type ChainInfo struct {
+	ChainId string `json:"chainId"`
+	Name    string `json:"name"`
+}
+
 type CreateAccountReq struct {
 	PublicKeyX   string `json:"publicKeyX"`
 	PublicKeyY   string `json:"publicKeyY"`
@@ -12,10 +17,16 @@ type CreateAccountReq struct {
 type CreateAccountResp struct {
 }
 
-type Request struct {
-	Name string `path:"name,options=you|me"`
+type GetSupportedPermissionsReq struct {
 }
 
-type Response struct {
-	Message string `json:"message"`
+type GetSupportedPermissionsResp struct {
+	Permissions []PermissionDetail `json:"permissions"`
+}
+
+type PermissionDetail struct {
+	Type         string      `json:"type"`
+	ProposedName string      `json:"proposedName"`
+	Chains       []ChainInfo `json:"chains"`
+	RuleTypes    []string    `json:"ruleTypes"`
 }
