@@ -20,6 +20,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: CreateAccountHandler(serverCtx),
 			},
 			{
+				Method:  http.MethodPost,
+				Path:    "/permissions",
+				Handler: SubmitPermissionHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodGet,
 				Path:    "/supported-permissions",
 				Handler: GetSupportedPermissionsHandler(serverCtx),

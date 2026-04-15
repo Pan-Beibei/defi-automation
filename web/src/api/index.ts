@@ -1,4 +1,5 @@
 import APIClient from "./apiClient";
+import type { ERC7715PermissionPayload } from "../types/permissions";
 
 const apiClient = new APIClient();
 
@@ -21,7 +22,15 @@ const getSupportedPermissions = () => {
   });
 };
 
+const submitPermission = (payload: ERC7715PermissionPayload) => {
+  return apiClient.post({
+    url: "/permissions",
+    data: payload,
+  });
+};
+
 export default {
   createAccount,
   getSupportedPermissions,
+  submitPermission,
 };

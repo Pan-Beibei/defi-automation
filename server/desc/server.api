@@ -1,0 +1,15 @@
+syntax = "v1"
+
+import "./types.api"
+
+service server-api {
+	@handler CreateAccount
+	post /account/create (CreateAccountReq) returns (CreateAccountResp)
+
+	@handler GetSupportedPermissions
+	get /supported-permissions (GetSupportedPermissionsReq) returns (GetSupportedPermissionsResp)
+
+	@handler SubmitPermission
+	post /permissions (SubmitPermissionReq) returns (SubmitPermissionResp)
+}
+

@@ -1,0 +1,56 @@
+syntax = "v1"
+
+
+type (
+	CreateAccountReq {
+		PublicKeyX   string `json:"publicKeyX"`
+		PublicKeyY   string `json:"publicKeyY"`
+		CredentialId string `json:"credentialId"`
+	}
+	CreateAccountResp  {}
+)
+
+type ChainInfo {
+	ChainId string `json:"chainId"`
+	Name    string `json:"name"`
+}
+
+type PermissionDetail {
+	Type         string      `json:"type"`
+	ProposedName string      `json:"proposedName"`
+	Chains       []ChainInfo `json:"chains"`
+	RuleTypes    []string    `json:"ruleTypes"`
+}
+
+type (
+	GetSupportedPermissionsReq  {}
+	GetSupportedPermissionsResp {
+		Permissions []PermissionDetail `json:"permissions"`
+	}
+)
+
+type PermissionData {
+    InitialAmount   string `json:"initialAmount,omitempty"`
+    AmountPerSecond string `json:"amountPerSecond,omitempty"`
+    MaxAmount       string `json:"maxAmount,omitempty"`
+    StartTime       int64  `json:"startTime,omitempty"`
+    TokenAddress    string `json:"tokenAddress,omitempty"`
+    PeriodAmount    string `json:"periodAmount,omitempty"`
+    PeriodDuration  int64  `json:"periodDuration,omitempty"`
+}
+
+type PermissionInfo {
+    Type string         `json:"type"`
+    Data PermissionData `json:"data"`
+}
+
+type (
+    SubmitPermissionReq {
+        ChainId             int64          `json:"chainId"`
+        To                  string         `json:"to"`
+        Expiry              int64          `json:"expiry,omitempty"`
+        IsAdjustmentAllowed bool           `json:"isAdjustmentAllowed"`
+        Permission          PermissionInfo `json:"permission"`
+    }
+    SubmitPermissionResp {}
+)
