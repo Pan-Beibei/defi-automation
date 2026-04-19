@@ -12,7 +12,7 @@ import type {
  */
 export function buildERC7715Payload(
   request: PermissionRequest,
-  chainId: number,
+  chainId: Hex,
   delegateTo: Hex,
 ): ERC7715PermissionPayload {
   const { type, expiry, isAdjustmentAllowed, ...rest } = request;
@@ -101,7 +101,7 @@ export function buildERC7715Payload(
     to: delegateTo,
     expiry: expiry ?? 0,
     isAdjustmentAllowed,
-    permission: { type, data: permissionData },
+    permission: { type, data: JSON.stringify(permissionData) },
   };
 }
 

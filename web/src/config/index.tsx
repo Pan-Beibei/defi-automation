@@ -1,12 +1,13 @@
 import { PermissionType } from "@/enum";
+import type { Hex } from "viem";
 
 export const SUPPORTED_CHAINS = [
-  { id: 11155111, name: "Sepolia (Testnet)" },
-  { id: 1, name: "Ethereum Mainnet" },
-  { id: 137, name: "Polygon" },
-  { id: 42161, name: "Arbitrum One" },
-  { id: 10, name: "Optimism" },
-  { id: 8453, name: "Base" },
+  { id: "0xaa36a7" as Hex, name: "Sepolia (Testnet)" },
+  { id: "0x1" as Hex, name: "Ethereum Mainnet" },
+  { id: "0x89" as Hex, name: "Polygon" },
+  { id: "0xa4b1" as Hex, name: "Arbitrum One" },
+  { id: "0xa" as Hex, name: "Optimism" },
+  { id: "0x2105" as Hex, name: "Base" },
 ];
 
 export const PERMISSION_TABS = [

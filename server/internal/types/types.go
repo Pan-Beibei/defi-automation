@@ -24,16 +24,6 @@ type GetSupportedPermissionsResp struct {
 	Permissions []PermissionDetail `json:"permissions"`
 }
 
-type PermissionData struct {
-	InitialAmount   string `json:"initialAmount,omitempty"`
-	AmountPerSecond string `json:"amountPerSecond,omitempty"`
-	MaxAmount       string `json:"maxAmount,omitempty"`
-	StartTime       int64  `json:"startTime,omitempty"`
-	TokenAddress    string `json:"tokenAddress,omitempty"`
-	PeriodAmount    string `json:"periodAmount,omitempty"`
-	PeriodDuration  int64  `json:"periodDuration,omitempty"`
-}
-
 type PermissionDetail struct {
 	Type         string      `json:"type"`
 	ProposedName string      `json:"proposedName"`
@@ -42,16 +32,22 @@ type PermissionDetail struct {
 }
 
 type PermissionInfo struct {
-	Type string         `json:"type"`
-	Data PermissionData `json:"data"`
+	Type string `json:"type"`
+	Data string `json:"data"`
+}
+
+type Rule struct {
+	Type string            `json:"type"`
+	Data map[string]string `json:"data"`
 }
 
 type SubmitPermissionReq struct {
-	ChainId             int64          `json:"chainId"`
+	ChainId             string         `json:"chainId"`
+	From                string         `json:"from,omitempty"`
 	To                  string         `json:"to"`
-	Expiry              int64          `json:"expiry,omitempty"`
 	IsAdjustmentAllowed bool           `json:"isAdjustmentAllowed"`
 	Permission          PermissionInfo `json:"permission"`
+	Rules               []Rule         `json:"rules"`
 }
 
 type SubmitPermissionResp struct {

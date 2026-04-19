@@ -29,28 +29,25 @@ type (
 	}
 )
 
-type PermissionData {
-    InitialAmount   string `json:"initialAmount,omitempty"`
-    AmountPerSecond string `json:"amountPerSecond,omitempty"`
-    MaxAmount       string `json:"maxAmount,omitempty"`
-    StartTime       int64  `json:"startTime,omitempty"`
-    TokenAddress    string `json:"tokenAddress,omitempty"`
-    PeriodAmount    string `json:"periodAmount,omitempty"`
-    PeriodDuration  int64  `json:"periodDuration,omitempty"`
-}
 
 type PermissionInfo {
     Type string         `json:"type"`
-    Data PermissionData `json:"data"`
+    Data string         `json:"data"`
+}
+
+type Rule {
+	Type string         `json:"type"`
+	Data map[string]string `json:"data"`
 }
 
 type (
     SubmitPermissionReq {
-        ChainId             int64          `json:"chainId"`
+        ChainId             string         `json:"chainId"`
+				From 								string				 `json:"from,omitempty"`
         To                  string         `json:"to"`
-        Expiry              int64          `json:"expiry,omitempty"`
         IsAdjustmentAllowed bool           `json:"isAdjustmentAllowed"`
         Permission          PermissionInfo `json:"permission"`
+				Rules 							[]Rule			 	 `json:"rules"`
     }
     SubmitPermissionResp {}
 )

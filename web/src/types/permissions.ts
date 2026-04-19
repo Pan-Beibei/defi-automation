@@ -53,12 +53,12 @@ export type PermissionRequest =
 export type PermissionData = Record<string, unknown>;
 
 export type ERC7715PermissionPayload = {
-  chainId: number;
+  chainId: Hex;
   to: Hex; // 委托账户地址
   expiry: number;
   isAdjustmentAllowed: boolean;
   permission: {
     type: string;
-    data: PermissionData;
+    data: string; // JSON.stringify(permissionData)
   };
 };

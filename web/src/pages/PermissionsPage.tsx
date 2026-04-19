@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import { useCallback, useState } from "react";
 import type { Hex } from "viem";
-
 import {
   ERC20TokenPeriodicForm,
   ERC20TokenRevocationForm,
@@ -35,7 +34,7 @@ import { PermissionType, type PermissionTypeValue } from "@/enum";
 
 function PermissionsPage() {
   // 基础设置
-  const [chainId, setChainId] = useState<number>(11155111);
+  const [chainId, setChainId] = useState<Hex>("0xaa36a7");
   const [delegateTo, setDelegateTo] = useState<string>("");
 
   // 权限表单
@@ -129,7 +128,7 @@ function PermissionsPage() {
               labelId="chain-label"
               label="Chain"
               value={chainId}
-              onChange={(e) => setChainId(Number(e.target.value))}
+              onChange={(e) => setChainId(e.target.value as Hex)}
             >
               {SUPPORTED_CHAINS.map((chain) => (
                 <MenuItem key={chain.id} value={chain.id}>
