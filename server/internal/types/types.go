@@ -37,8 +37,8 @@ type PermissionInfo struct {
 }
 
 type Rule struct {
-	Type string            `json:"type"`
-	Data map[string]string `json:"data"`
+	Type string `json:"type"`
+	Data string `json:"data"`
 }
 
 type SubmitPermissionReq struct {

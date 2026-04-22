@@ -37,7 +37,7 @@ func (l *GetSupportedPermissionsLogic) GetSupportedPermissions(req *types.GetSup
         })
     }
 
-		    // 构建权限列表
+	// 构建权限列表
     permissions := make([]types.PermissionDetail, 0, len(svc.DefaultGatorPermissionToOffer))
     for _, offer := range svc.DefaultGatorPermissionToOffer {
         ruleTypes, ok := svc.SupportedRuleTypes[offer.Type]

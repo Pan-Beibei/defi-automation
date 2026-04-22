@@ -52,11 +52,17 @@ export type PermissionRequest =
 // -------- 发往后端的标准 ERC-7715 Payload --------
 export type PermissionData = Record<string, unknown>;
 
+interface Rule {
+  type: string;
+  data: string; // JSON.stringify(ruleData)
+}
+
 export type ERC7715PermissionPayload = {
   chainId: Hex;
   to: Hex; // 委托账户地址
   expiry: number;
   isAdjustmentAllowed: boolean;
+  rules: Rule[];
   permission: {
     type: string;
     data: string; // JSON.stringify(permissionData)

@@ -37,32 +37,18 @@ func (l *SubmitPermissionLogic) SubmitPermission(req *types.SubmitPermissionReq)
         return nil, err
     }
 
+    factory := permissions.NewPermissionHandlerFactory()
+
+    handler, err := factory.Create(req)  // req 是你已验证的 SubmitPermissionReq
+    if err != nil {
+        return nil, fmt.Errorf("failed to create permission handler: %w", err)
+    }
+ 
+
+    prepared, err := handler.Handle(l.ctx)
     
 
-	//     switch req.Permission.Type {
-
-    // case "erc20-token-periodic":
-    //     // 第一层：结构校验（400 级错误）
-    //     data, err := permissions.ParseErc20TokenPeriodicData(req.Permission.Data)
-    //     if err != nil {
-    //         return nil, err
-    //     }
-    //     if err := permissions.ValidateErc20TokenPeriodicRequest(req, data); err != nil {
-    //         return nil, err
-    //     }
-
-    //     // 第二层：字段级校验（前端显示用，需先拿到 token metadata 的 decimals）
-    //     validationErrs := permissions.DeriveErc20TokenPeriodicValidationErrors(data, req.Expiry)
-    //     if validationErrs.HasErrors() {
-    //         // 根据你的错误响应格式返回
-    //         return nil, fmt.Errorf("validation failed: %+v", validationErrs)
-    //     }
-
-    //     // ... 后续业务逻辑（buildContext、createCaveats 等）
-
-    // default:
-    //     return nil, fmt.Errorf("unsupported permission type: %s", req.Permission.Type)
-    // }
+    fmt.Printf("构造好的数据:%+v\n", prepared)
 
 	return &types.SubmitPermissionResp{}, nil
 }

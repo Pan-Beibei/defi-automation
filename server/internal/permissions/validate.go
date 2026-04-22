@@ -14,14 +14,6 @@ var (
     addressRegex = regexp.MustCompile(`(?i)^0x[a-fA-F0-9]{40}$`)
 )
 
-// 支持的权限类型
-var supportedPermissionTypes = map[string]struct{}{
-    "native-token-stream":    {},
-    "native-token-periodic":  {},
-    "erc20-token-stream":     {},
-    "erc20-token-periodic":   {},
-    "erc20-token-revocation": {},
-}
 
 // 每种权限类型允许使用的 rule 类型
 var supportedRuleTypes = map[string][]string{
@@ -65,9 +57,6 @@ func ValidateSubmitPermissionReq(req *types.SubmitPermissionReq) error {
     if req.Permission.Type == "" {
         return invalidInput("permission.type: must not be empty")
     }
-    if _, ok := supportedPermissionTypes[req.Permission.Type]; !ok {
-        return invalidInput("permission.type: unsupported type %q", req.Permission.Type)
-    }
 
     // permission.data 是前端 JSON.stringify 后的字符串，必须是合法 JSON
     if req.Permission.Data == "" {
@@ -77,14 +66,8 @@ func ValidateSubmitPermissionReq(req *types.SubmitPermissionReq) error {
         return invalidInput("permission.data: must be valid JSON")
     }
 
-    // expiry 如果设置了，必须是正数且在未来
-    // if req.Expiry < 0 {
-    //     return invalidInput("expiry: must not be negative")
-    // }
-    // if req.Expiry > 0 && req.Expiry < time.Now().Unix() {
-    //     return invalidInput("expiry: must be in the future")
-    // }
 
+    // rules support multiple selection.
     if err := validateRules(req.Rules, req.Permission.Type); err != nil {
         return err
     }
