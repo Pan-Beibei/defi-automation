@@ -43,7 +43,7 @@ type Rule struct {
 
 type SubmitPermissionReq struct {
 	ChainId             string         `json:"chainId"`
-	From                string         `json:"from,omitempty"`
+	From                string         `json:"from,optional"`
 	To                  string         `json:"to"`
 	IsAdjustmentAllowed bool           `json:"isAdjustmentAllowed"`
 	Permission          PermissionInfo `json:"permission"`

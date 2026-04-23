@@ -4,18 +4,22 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"server/internal/logic"
 	"server/internal/svc"
 	"server/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func SubmitPermissionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.SubmitPermissionReq
 		if err := httpx.Parse(r, &req); err != nil {
+		fmt.Printf(">>> parse error: %v\n", err)  // 解析错误日志
+
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}

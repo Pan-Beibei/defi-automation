@@ -5,7 +5,24 @@ import type {
   PermissionRequest,
   ERC7715PermissionPayload,
   PermissionData,
-} from "../types/permissions";
+  Rule,
+} from "@/types/permissions";
+
+function buildRules(
+  expiry: number | null,
+  // 未来扩展：justification?: string | null, startTime?: number | null, ...
+): Rule[] {
+  const rules: Rule[] = [];
+
+  if (expiry != null) {
+    rules.push({
+      type: "expiry",
+      data: JSON.stringify({ timestamp: expiry }),
+    });
+  }
+
+  return rules;
+}
 
 /**
  * 将前端表单数据打包成 ERC-7715 标准 payload，发往后端
@@ -98,10 +115,11 @@ export function buildERC7715Payload(
 
   return {
     chainId,
+    from: "0x0000", // 可选：如果后端需要验证发起账户，可以从用户钱包获取并填充
     to: delegateTo,
-    expiry: expiry ?? 0,
     isAdjustmentAllowed,
     permission: { type, data: JSON.stringify(permissionData) },
+    rules: buildRules(expiry),
   };
 }
 
