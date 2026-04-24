@@ -7,4 +7,5 @@ import "github.com/zeromicro/go-zero/rest"
 
 type Config struct {
 	rest.RestConf
+	EthRPCURL string // Ethereum JSON-RPC endpoint
 }

@@ -47,6 +47,12 @@ function PermissionsPage() {
   const mutation = useMutation({
     mutationFn: (payload: ERC7715PermissionPayload) =>
       api.submitPermission(payload),
+    onSuccess(data) {
+      console.log("提交成功，后端响应：", data);
+    },
+    onError(error) {
+      console.error("提交失败：", error);
+    },
   });
 
   // 每次表单字段变动触发

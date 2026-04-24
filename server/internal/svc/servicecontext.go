@@ -5,6 +5,7 @@ package svc
 
 import (
 	"server/internal/config"
+	"server/internal/permissions/erc20tokenperiodic"
 )
 
 type ServiceContext struct {
@@ -12,6 +13,10 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+
+	// 显式注册所有权限类型处理器
+  erc20tokenperiodic.Register()
+
 	return &ServiceContext{
 		Config: c,
 	}

@@ -2,6 +2,7 @@ package permissions
 
 import (
 	"fmt"
+
 	"server/internal/types"
 )
 
@@ -20,3 +21,4 @@ func Register(permType string, ctor HandlerConstructor) {
     }
     registry[permType] = ctor
 }
+

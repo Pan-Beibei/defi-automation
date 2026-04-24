@@ -2,12 +2,17 @@ package erc20tokenperiodic
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 
 	"server/internal/permissions"
 	"server/internal/types"
 )
+
+
+const rootAuthority = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
 
 // handler 实现 permissions.PermissionHandler 接口
 type handler struct {
@@ -61,20 +66,83 @@ func (h *handler) Handle(ctx context.Context) (*permissions.PreparedPermission, 
         return nil, err
     }
 
+    if validated.From == nil || *validated.From == "" {
+        return nil, fmt.Errorf("from address is required")
+    }
+
     fmt.Printf("收窄之后的权限请求数据: %+v\n", validated)
 
-		
-    // Step 2: buildContext（调用 token metadata service）
-    // Step 3: applyContext（处理 rules）
-    // Step 4: createCaveats
-    // Step 5: 组装 PreparedPermission
+        // Step 3: 填充默认值（startTime → now if nil）
+    populated := PopulatePermission(validated.Permission)
 
-    return nil, nil // 占位，后续 Step 细化
+    contracts := permissions.DefaultContracts
+
+      // Step 4: ERC20PeriodTransferEnforcer + ValueLteEnforcer caveats
+    localCaveats, err := CreatePermissionCaveats(populated, contracts)
+    if err != nil {
+        return nil, fmt.Errorf("failed to create permission caveats: %w", err)
+    }
+
+    caveats := make([]permissions.Caveat, 0, len(localCaveats)+2)
+    for _, c := range localCaveats {
+        caveats = append(caveats, permissions.Caveat{
+            Enforcer: c.Enforcer,
+            Terms:    c.Terms,
+            Args:     c.Args,
+        })
+    }
+
+    // Step 5: expiry rule → TimestampEnforcer caveat
+    if expiry, ok := getExpiryTimestamp(validated.Rules); ok {
+        caveats = append(caveats, permissions.Caveat{
+            Enforcer: contracts.TimestampEnforcer,
+            Terms:    timestampTerms(expiry),
+            Args:     "0x",
+        })
+    }
+
+    // Step 6: 获取链上 nonce → NonceEnforcer caveat
+    if h.deps.EthRPCURL == "" {
+        return nil, fmt.Errorf("EthRPCURL is not configured")
+    }
+
+    //getCurrentNonce 使用 eth 库查询
+    nonce, err := getCurrentNonce(ctx, h.deps.EthRPCURL, contracts.NonceEnforcer, contracts.DelegationManager, *validated.From)
+    if err != nil {
+        return nil, fmt.Errorf("failed to get nonce: %w", err)
+    }
+    caveats = append(caveats, permissions.Caveat{
+        Enforcer: contracts.NonceEnforcer,
+        Terms:    nonceTerms(nonce),
+        Args:     "0x",
+    })
+
+		
+     // Step 7: 生成随机 salt（crypto/rand，32 bytes）
+    saltBuf := make([]byte, 32)
+    if _, err := rand.Read(saltBuf); err != nil {
+        return nil, fmt.Errorf("failed to generate salt: %w", err)
+    }
+    salt := "0x" + hex.EncodeToString(saltBuf)
+
+    // Step 8: 组装 PreparedPermission
+    return &permissions.PreparedPermission{
+        ChainId: h.req.ChainId,
+        From:    *validated.From,
+        To:      h.req.To,
+        UnsignedDelegation: permissions.Delegation{
+            Delegate:  h.req.To,
+            Delegator: *validated.From,
+            Authority: rootAuthority,
+            Caveats:   caveats,
+            Salt:      salt,
+        },
+        Caveats:       caveats,
+        Justification: populated.Data.Justification,
+    }, nil
 }
 
-// init 在包被导入时自动注册到全局注册表
-// 对应 TS: permissionHandlerFactory.ts 中 switch case 的注册
-func init() {
+func Register() {
     permissions.Register("erc20-token-periodic", func(
         req types.SubmitPermissionReq,
         deps permissions.HandlerDeps,

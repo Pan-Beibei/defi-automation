@@ -35,13 +35,22 @@ type Delegation struct {
 // 对应 TS: PermissionHandlerFactory 中注入的服务
 type HandlerDeps struct {
     TokenMetadataService TokenMetadataService // interface, Step后续定义
+    EthRPCURL            string // JSON-RPC endpoint, e.g. "https://sepolia.infura.io/v3/..."
+}
+
+// DelegationContracts holds enforcer contract addresses (same across all supported chains).
+type DelegationContracts struct {
+    DelegationManager            string
+    NativeTokenStreamingEnforcer string
+    ExactCalldataEnforcer        string
+    TimestampEnforcer            string
+    NonceEnforcer                string
+    Erc20PeriodTransferEnforcer  string
+    ValueLteEnforcer             string
 }
 
 // PermissionHandler 是所有权限处理器必须实现的接口
-// 对应 TS: PermissionHandlerType
 type PermissionHandler interface {
-    // Handle 执行完整的权限处理流程（验证→构建上下文→生成caveats→组装delegation）
-    // 返回未签名的 PreparedPermission 供前端签名
     Handle(ctx context.Context) (*PreparedPermission, error)
 }
 

@@ -3,6 +3,7 @@ package erc20tokenperiodic
 import (
 	"fmt"
 	"math/big"
+	"server/internal/permissions"
 	"strings"
 )
 
@@ -40,6 +41,25 @@ func erc20PeriodTransferTerms(tokenAddress, periodAmountHex string, periodDurati
     return "0x" + addrHex + amtHex + durHex + dateHex, nil
 }
 
+// timestampTerms 编码 TimestampEnforcer 的 terms：
+// 0x + afterThreshold(16B=0) + beforeThreshold(16B=expiry)
+// 对应 TS: delegation-core createTimestampTerms()
+func timestampTerms(expiry int64) string {
+    after := fmt.Sprintf("%032x", 0)
+    before := fmt.Sprintf("%032x", uint64(expiry))
+    return "0x" + after + before
+}
+
+// nonceTerms 编码 NonceEnforcer 的 terms：0x + nonce padded to 32 bytes
+// 对应 TS: delegation-core createNonceTerms()
+func nonceTerms(nonce *big.Int) string {
+    h := nonce.Text(16)
+    if len(h) < 64 {
+        h = strings.Repeat("0", 64-len(h)) + h
+    }
+    return "0x" + h
+}
+
 // valueLteTerms encodes the terms for ValueLteEnforcer with maxValue = 0.
 // Returns 0x + 64 zero hex chars (32-byte zero).
 // Matches createValueLteTerms({ maxValue: 0n }) in delegation-core.
@@ -62,7 +82,7 @@ func padLeft64(h string) string {
 //  2. ValueLteEnforcer            — caps msg.value at 0 (no native token allowed alongside the delegation).
 //
 // Matches createPermissionCaveats() in caveats.ts.
-func CreatePermissionCaveats(perm PopulatedPermission, contracts DelegationContracts) ([]Caveat, error) {
+func CreatePermissionCaveats(perm PopulatedPermission, contracts permissions.DelegationContracts) ([]Caveat, error) {
     erc20Terms, err := erc20PeriodTransferTerms(
         perm.Data.TokenAddress,
         perm.Data.PeriodAmount,

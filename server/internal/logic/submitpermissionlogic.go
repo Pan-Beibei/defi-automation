@@ -41,11 +41,17 @@ func (l *SubmitPermissionLogic) SubmitPermission(req *types.SubmitPermissionReq)
 
     handler, err := factory.Create(req)  // req 是你已验证的 SubmitPermissionReq
     if err != nil {
+				fmt.Printf("创建权限处理器出错: %+v\n", err)
+
         return nil, fmt.Errorf("failed to create permission handler: %w", err)
     }
  
 
     prepared, err := handler.Handle(l.ctx)
+		if err != nil {
+			fmt.Printf("处理权限请求出错: %+v\n", err)
+				return nil, fmt.Errorf("failed to handle permission request: %w", err)
+		}
     
 
     fmt.Printf("构造好的数据:%+v\n", prepared)
