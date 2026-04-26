@@ -39,7 +39,9 @@ func (l *SubmitPermissionLogic) SubmitPermission(req *types.SubmitPermissionReq)
 
     factory := permissions.NewPermissionHandlerFactory()
 
-    handler, err := factory.Create(req)  // req 是你已验证的 SubmitPermissionReq
+    handler, err := factory.Create(req, permissions.HandlerDeps{
+        EthRPCURL: l.svcCtx.Config.EthRPCURL,
+    })  // req 是你已验证的 SubmitPermissionReq
     if err != nil {
 				fmt.Printf("创建权限处理器出错: %+v\n", err)
 

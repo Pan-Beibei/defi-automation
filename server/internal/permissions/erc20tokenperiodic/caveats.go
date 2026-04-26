@@ -18,11 +18,13 @@ import (
 //
 // Total: 116 bytes, returned as a 0x-prefixed hex string.
 func erc20PeriodTransferTerms(tokenAddress, periodAmountHex string, periodDuration, startDate int64) (string, error) {
+    // validate token address
     if !addressRegex.MatchString(tokenAddress) {
         return "", fmt.Errorf("invalid tokenAddress: must be a valid address")
     }
     periodAmount := new(big.Int)
     hexStr := strings.TrimPrefix(periodAmountHex, "0x")
+    // parse input hex
     if _, ok := periodAmount.SetString(hexStr, 16); !ok || periodAmount.Sign() <= 0 {
         return "", fmt.Errorf("invalid periodAmount: must be a positive hex integer")
     }
@@ -34,7 +36,7 @@ func erc20PeriodTransferTerms(tokenAddress, periodAmountHex string, periodDurati
     }
 
     addrHex := strings.ToLower(strings.TrimPrefix(tokenAddress, "0x")) // 40 hex chars
-    amtHex := padLeft64(periodAmount.Text(16))
+    amtHex := padLeft64(periodAmount.Text(16)) // output hex padded to 64 chars (32 bytes)
     durHex := fmt.Sprintf("%064x", uint64(periodDuration))
     dateHex := fmt.Sprintf("%064x", uint64(startDate))
 

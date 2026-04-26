@@ -15,7 +15,7 @@ func (t *TypeDescriptor) UnmarshalJSON(data []byte) error {
         return nil
     }
     var obj struct {
-        Name string `json:"name"`
+        Name        string `json:"name"`
     }
     if err := json.Unmarshal(data, &obj); err != nil {
         return err

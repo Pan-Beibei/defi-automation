@@ -72,12 +72,12 @@ func (h *handler) Handle(ctx context.Context) (*permissions.PreparedPermission, 
 
     fmt.Printf("收窄之后的权限请求数据: %+v\n", validated)
 
-        // Step 3: 填充默认值（startTime → now if nil）
+    // Step 3: 填充默认值（startTime → now if nil）
     populated := PopulatePermission(validated.Permission)
 
     contracts := permissions.DefaultContracts
 
-      // Step 4: ERC20PeriodTransferEnforcer + ValueLteEnforcer caveats
+    // Step 4: ERC20PeriodTransferEnforcer + ValueLteEnforcer caveats
     localCaveats, err := CreatePermissionCaveats(populated, contracts)
     if err != nil {
         return nil, fmt.Errorf("failed to create permission caveats: %w", err)

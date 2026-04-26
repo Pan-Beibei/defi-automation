@@ -2,4 +2,6 @@ Name: server-api
 Host: 0.0.0.0
 Port: 8888
 
-EthRPCURL: https://sepolia.infura.io/v3/YOUR_KEY_HERE
+Timeout: 15000 # 单位毫秒，默认 3000
+
+EthRPCURL: https://sepolia.gateway.tenderly.co
